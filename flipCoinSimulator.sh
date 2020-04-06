@@ -1,16 +1,40 @@
 #!/bin/bash -x
 
-#Function To Display  Head or Tail 
-function  displayHeadTail(){
+#CONSTANT
+IS_HEAD=0
+IS_TAIL=1
+COUNT=10
 
-   randomCoin=$(( RANDOM%2 ))
-	if [[ $randomCoin -eq 1 ]]
-	then
-		echo "Head"
-	else
-		echo "Tail"
-	fi
+headCount=0
+tailCount=0
+function flipCoin(){
+	result=$(( RANDOM%2 ))
+	echo $result
 }
 
-displayHeadTail
+#FLIPING COIN AND STORING IT IN DICTIONARY
+declare -A singlet
+for ((  i=0 ; i<COUNT ; i++ ))
+do
+	singlet[$i]=$( flipCoin )
+	if [[ singlet[$i] -eq IS_HEAD ]]
+	then
+		(( headCount++ ))
+	elif [[ singlet[$i] -eq IS_TAIL ]]
+	then
+		(( tailCount++ ))
+	fi
+done
+echo ${singlet[@]}
 
+#FUNCTION FOR CALCULATING PERCENTAGE
+function percentage(){
+	count=`echo "$1*0.1"|bc`
+	percent=`echo "$count*100"|bc`
+	echo $percent
+}
+
+singletHeadPercentage=$( percentage $headCount )
+echo $singletHeadPercentage
+singletTailPercentage=$( percentage $tailCount )
+echo $singletTailPercentage
